@@ -118,7 +118,7 @@ export async function runSlackChannel(displayName: string): Promise<ChannelFlowR
     await fail(
       'init-first-agent',
       `Couldn't finish connecting ${agentName}.`,
-      'You can retry later with `/init-first-agent` in Claude Code.',
+      'You can retry later with `/init-first-agent` in Codex.',
     );
   }
 

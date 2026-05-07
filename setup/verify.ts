@@ -15,12 +15,7 @@ import { DATA_DIR } from '../src/config.js';
 import { readEnvFile } from '../src/env.js';
 import { log } from '../src/log.js';
 import { getLaunchdLabel, getSystemdUnit } from '../src/install-slug.js';
-import {
-  getPlatform,
-  getServiceManager,
-  hasSystemd,
-  isRoot,
-} from './platform.js';
+import { getPlatform, getServiceManager, hasSystemd, isRoot } from './platform.js';
 import { emitStatus } from './status.js';
 
 export async function run(_args: string[]): Promise<void> {
@@ -38,11 +33,7 @@ export async function run(_args: string[]): Promise<void> {
   // developers with multiple clones), nothing in this checkout is actually
   // wired up. Surface the mismatch directly so the user knows to point the
   // service at the right folder.
-  let service:
-    | 'not_found'
-    | 'stopped'
-    | 'running'
-    | 'running_other_checkout' = 'not_found';
+  let service: 'not_found' | 'stopped' | 'running' | 'running_other_checkout' = 'not_found';
   let runningFromPath: string | null = null;
   const mgr = getServiceManager();
 
@@ -74,10 +65,7 @@ export async function run(_args: string[]): Promise<void> {
       execSync(`${prefix} is-active ${systemdUnit}`, { stdio: 'ignore' });
       service = 'running';
       try {
-        const pidStr = execSync(
-          `${prefix} show ${systemdUnit} -p MainPID --value`,
-          { encoding: 'utf-8' },
-        ).trim();
+        const pidStr = execSync(`${prefix} show ${systemdUnit} -p MainPID --value`, { encoding: 'utf-8' }).trim();
         const pid = Number(pidStr);
         if (Number.isInteger(pid) && pid > 0) {
           runningFromPath = resolveBinaryScript(pid);
@@ -115,11 +103,7 @@ export async function run(_args: string[]): Promise<void> {
     }
   }
 
-  if (
-    service === 'running' &&
-    runningFromPath &&
-    !isPathInside(runningFromPath, projectRoot)
-  ) {
+  if (service === 'running' && runningFromPath && !isPathInside(runningFromPath, projectRoot)) {
     service = 'running_other_checkout';
   }
 
@@ -137,9 +121,13 @@ export async function run(_args: string[]): Promise<void> {
   // 3. Check credentials
   let credentials = 'missing';
   const envFile = path.join(projectRoot, '.env');
+  const codexAuthPath = path.join(process.env.CODEX_HOME?.trim() || path.join(homeDir, '.codex'), 'auth.json');
+  if (fs.existsSync(codexAuthPath) || process.env.OPENAI_API_KEY?.trim()) {
+    credentials = 'configured';
+  }
   if (fs.existsSync(envFile)) {
     const envContent = fs.readFileSync(envFile, 'utf-8');
-    if (/^(CLAUDE_CODE_OAUTH_TOKEN|ANTHROPIC_API_KEY|ANTHROPIC_AUTH_TOKEN|ONECLI_URL)=/m.test(envContent)) {
+    if (/^OPENAI_API_KEY=/m.test(envContent)) {
       credentials = 'configured';
     }
   }
@@ -209,11 +197,7 @@ export async function run(_args: string[]): Promise<void> {
 
   // 6. Check mount allowlist
   let mountAllowlist = 'missing';
-  if (
-    fs.existsSync(
-      path.join(homeDir, '.config', 'nanoclaw', 'mount-allowlist.json'),
-    )
-  ) {
+  if (fs.existsSync(path.join(homeDir, '.config', 'nanoclaw', 'mount-allowlist.json'))) {
     mountAllowlist = 'configured';
   }
 
@@ -247,9 +231,7 @@ export function determineVerifyStatus(input: {
   credentials: string;
   registeredGroups: number;
 }): 'success' | 'failed' {
-  return input.service === 'running' &&
-    input.credentials !== 'missing' &&
-    input.registeredGroups > 0
+  return input.service === 'running' && input.credentials !== 'missing' && input.registeredGroups > 0
     ? 'success'
     : 'failed';
 }

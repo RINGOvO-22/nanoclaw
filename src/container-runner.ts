@@ -210,7 +210,7 @@ export function killContainer(sessionId: string, reason: string): void {
  *   sessions.agent_provider
  *     → agent_groups.agent_provider
  *     → container.json `provider`
- *     → 'claude'
+ *     → 'codex'
  *
  * Pure so the precedence can be unit-tested without a DB or filesystem.
  */
@@ -219,7 +219,7 @@ export function resolveProviderName(
   agentGroupProvider: string | null | undefined,
   containerConfigProvider: string | null | undefined,
 ): string {
-  return (sessionProvider || agentGroupProvider || containerConfigProvider || 'claude').toLowerCase();
+  return (sessionProvider || agentGroupProvider || containerConfigProvider || 'codex').toLowerCase();
 }
 
 function resolveProviderContribution(

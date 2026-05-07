@@ -37,7 +37,7 @@ export interface ContainerConfig {
   additionalMounts: AdditionalMountConfig[];
   /** Which skills to enable — array of skill names or "all" (default). */
   skills: string[] | 'all';
-  /** Agent provider name (e.g. "claude", "opencode"). Default: "claude". */
+  /** Agent provider name (e.g. "codex", "claude", "opencode"). Default: "codex". */
   provider?: string;
   /** Agent group display name (used in transcript archiving). */
   groupName?: string;
@@ -55,6 +55,7 @@ function emptyConfig(): ContainerConfig {
     packages: { apt: [], npm: [] },
     additionalMounts: [],
     skills: 'all',
+    provider: 'codex',
   };
 }
 

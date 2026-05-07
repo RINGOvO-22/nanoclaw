@@ -15,8 +15,8 @@ describe('resolveProviderName', () => {
     expect(resolveProviderName(null, null, 'opencode')).toBe('opencode');
   });
 
-  it('defaults to claude when nothing is set', () => {
-    expect(resolveProviderName(null, null, undefined)).toBe('claude');
+  it('defaults to codex when nothing is set', () => {
+    expect(resolveProviderName(null, null, undefined)).toBe('codex');
   });
 
   it('lowercases the resolved name', () => {

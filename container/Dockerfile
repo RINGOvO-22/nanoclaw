@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1.7
 # NanoClaw Agent Container
-# Runs Claude Agent SDK in isolated Linux VM with browser automation.
+# Runs the configured agent provider in an isolated Linux VM with browser automation.
 #
 # Runtime split:
 #   - agent-runner (our TypeScript code): Bun, mounted RO at /app/src by host
-#   - globally-installed Node CLIs (claude-code, agent-browser, vercel): pnpm + Node
+#   - globally-installed Node CLIs (codex, claude-code, agent-browser, vercel): pnpm + Node
 #
 # Source is never baked in — /app/src is provided by a shared read-only
 # bind mount at runtime (see src/container-runner.ts). Source-only changes
@@ -20,6 +20,7 @@ ARG INSTALL_CJK_FONTS=false
 # mean every rebuild silently picks up the latest and can break in lockstep
 # across all users.
 ARG CLAUDE_CODE_VERSION=2.1.116
+ARG CODEX_VERSION=0.128.0
 ARG AGENT_BROWSER_VERSION=latest
 ARG VERCEL_VERSION=52.2.1
 ARG BUN_VERSION=1.3.12
@@ -100,6 +101,9 @@ RUN --mount=type=cache,target=/root/.cache/pnpm \
 
 RUN --mount=type=cache,target=/root/.cache/pnpm \
     pnpm install -g "agent-browser@${AGENT_BROWSER_VERSION}"
+
+RUN --mount=type=cache,target=/root/.cache/pnpm \
+    pnpm install -g "@openai/codex@${CODEX_VERSION}"
 
 RUN --mount=type=cache,target=/root/.cache/pnpm \
     pnpm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"

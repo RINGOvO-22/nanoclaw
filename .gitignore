@@ -3,13 +3,34 @@ node_modules/
 .npm-cache/
 # pnpm content-addressable store (created when running in sandbox mode)
 .pnpm-store/
+
+# Package manager / tool caches
+.cache/
+.turbo/
+.next/
+.bun/
+
 # Build output
 dist/
+build/
+coverage/
+*.tsbuildinfo
 
 # Local data & auth
 store/
 data/
 logs/
+*.log
+*.pid
+*.sock
+
+# Local databases and transient SQLite files
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
 
 # Groups - per-installation state, not tracked
 groups/*
@@ -27,6 +48,8 @@ groups/*
 
 # Temp files
 .tmp-*
+*.tmp
+*.bak
 
 # OS
 .DS_Store
